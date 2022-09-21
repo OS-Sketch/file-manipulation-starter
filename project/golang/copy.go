@@ -6,3 +6,7 @@ package main
 
 // TODO: Define a main function that reads in the contents of the source file
 // and writes them to the destination file
+
+func main() {
+
+}
