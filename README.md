@@ -44,7 +44,7 @@ information about these programs!
 - Use the `cd` command to change into the directory for this repository.
 - Review the `Makefile` in the `project/golang/` directory to see the targets
   for the version of this project implemented in the Go programming language.
-- Both of these `Makefile`s will work on the Linux and MacOS operating systems
+- The provided `Makefile` will work on the Linux and MacOS operating systems
   and, additionally, on GitHub Actions and inside of the OS-Sketch Docker
   container. You may need to revise portions of these `Makefile`s so that they
   work correctly on the Windows operating system.
