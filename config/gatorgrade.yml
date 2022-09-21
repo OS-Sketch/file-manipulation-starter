@@ -1,0 +1,165 @@
+setup: |
+  cd project/golang && make all
+  echo "Done installing project dependencies!"
+---
+
+# Reminder for ^^^:
+# All commands executed in the setup block are done in a
+# one-by-one fashion from the current working directory. This means
+# that there is no history associated with running the commands and
+# thus multiple commands must be run in a single chain.
+
+# perform checks on a file
+- project/pylang/copy.py:
+    - description: Ensure that the copy.py file exists in project/pylang
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for copy.py
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Use a print statement in copy.py for the source path label
+      check: MatchFileFragment
+      options:
+        fragment: Source Path
+        count: 1
+        exact: true
+    - description: Use a print statement in copy.py for the destination path label
+      check: MatchFileFragment
+      options:
+        fragment: Destination Path
+        count: 1
+        exact: true
+    - description: Use a print statement in copy.py for the designated error message
+      check: MatchFileFragment
+      options:
+        fragment: Cannot copy
+        count: 1
+        exact: false
+    - description: Create a sufficient number of docstring (i.e., multiple-line) comments in main.py
+      check: CountMultipleLineComments
+      options:
+        language: "Python"
+        count: 1
+        exact: false
+    - description: Create a sufficient number of single-line comments in main.py
+      check: CountSingleLineComments
+      options:
+        language: "Python"
+        count: 5
+        exact: false
+
+# perform checks on a file
+- project/golang/copy.go:
+    - description: Ensure that the copy.go file exists in project/pylang
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for copy.py
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Use a print statement in copy.go for the source path label
+      check: MatchFileFragment
+      options:
+        fragment: Source Path
+        count: 1
+        exact: true
+    - description: Use a print statement in copy.go for the destination path label
+      check: MatchFileFragment
+      options:
+        fragment: Destination Path
+        count: 1
+        exact: true
+    - description: Use a print statement in copy.go for the designated error message
+      check: MatchFileFragment
+      options:
+        fragment: Cannot copy
+        count: 1
+        exact: false
+    - description: Use single-line comment character sequence in a Go program
+      check: MatchFileFragment
+      options:
+        fragment: //
+        count: 5
+        exact: false
+
+# run a command
+- description: Use go fmt to confirm that copy.go is formatted correctly
+  command: output=$(go fmt project/golang/copy.go 2>&1); test -z "$output"
+
+# run a command
+- description: Run the project/pylang/copy.py program and ensure it does not crash
+  command: python project/pylang/copy.py files source.txt files destination.txt
+
+# run the program and confirm correct number of lines in the output
+- description: Run the project/pylang/copy.py program and ensure that it yields three lines of output
+  check: CountCommandOutput
+  options:
+    command: python project/pylang/copy.py files source.txt files destination.txt
+    count: 3
+    exact: true
+
+# run the program and confirm correct number of lines in the output
+- description: Run the project/golang/bin/copy program and ensure that it yields three lines of output
+  check: CountCommandOutput
+  options:
+    command: ./project/golang/bin/copy files source.txt files destination.txt
+    count: 3
+    exact: true
+
+# run the program and confirm correct number of lines in the output
+- description: Run the project/golang/bin/copy program and ensure that it yields a success message
+  check: MatchCommandFragment
+  options:
+    command: ./project/golang/bin/copy files source.txt files destination.txt
+    fragment: Completed the copy
+    count: 1
+
+# run the program and confirm correct number of lines in the output
+- description: Run the project/pylang/copy.py program and ensure that it yields a success message
+  check: MatchCommandFragment
+  options:
+    command: python project/pylang/copy.py files source.txt files destination.txt
+    fragment: Completed the copy
+    count: 1
+    exact: true
+
+# perform checks on a file
+- writing/reflection.md:
+    - description: Ensure that the reflection.md file exists in the writing/ directory
+      check: ConfirmFileExists
+    - description: Complete all TODOs, remove the TODO markers, and rewrite comments for the reflection
+      check: MatchFileFragment
+      options:
+        fragment: TODO
+        count: 0
+        exact: true
+    - description: Delete the 'Add Your Name Here' prompt in the reflection file
+      check: MatchFileFragment
+      options:
+        fragment: "Add Your Name Here"
+        count: 0
+        exact: true
+    - description: Write a minimum of 500 meaningful words in the reflection
+      check: CountFileWords
+      options:
+        count: 500
+        exact: false
+    - check: CountMarkdownTags
+      options:
+        tag: heading
+        count: 10
+        exact: false
+    - check: CountMarkdownTags
+      options:
+        tag: code_block
+        count: 2
+        exact: false
+
+# count number of commits in the GitHub repository
+- description: Have at least a specific minimum number of 10 commits in repository
+  check: CountCommits
+  options:
+    count: 10
